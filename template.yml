@@ -36,10 +36,6 @@ Resources:
         - Key: CostCenter
           Value: !Sub "${AppName}"
 
-  # Bucket for CodePipeline artifacts
-  ArtifactsBucket:
-    Type: AWS::S3::Bucket
-
   ## CloudFront OAI for the website bucket policy
   CloudFrontOAI:
     Type: AWS::CloudFront::CloudFrontOriginAccessIdentity

@@ -157,7 +157,7 @@ Resources:
   PipelineRole:
     Type: AWS::IAM::Role
     Properties:
-      Description: !Sub "Used by CodePipeline. Created by CloudFormation ${AWS::StackId}"
+      Description: DESCRIIPTTIIIOONN #!Sub "Used by CodePipeline. Created by CloudFormation ${AWS::StackId}"
       AssumeRolePolicyDocument:
         Version: "2012-10-17"
         Statement:
@@ -179,13 +179,13 @@ Resources:
                   - "s3:GetObjectVersion"
                   - "s3:PutObject"
                 Resource:
-                  - !Sub arn:${AWS::Partition}:s3:::${ArtifactsBucket}/*
+                  - !Sub arn:aws:s3:::${ArtifactsBucket}/*
               - Effect: Allow
                 Action:
                   - "s3:ListBucket"
                   - "s3:GetBucketPolicy"
                 Resource:
-                  - !Sub arn:${AWS::Partition}:s3:::${ArtifactsBucket}
+                  - !Sub arn:aws:s3:::${ArtifactsBucket}
           #FIXME
         - PolicyName: secretsmanager-access
         PolicyDocument:

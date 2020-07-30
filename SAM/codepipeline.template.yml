@@ -1,0 +1,283 @@
+---
+AWSTemplateFormatVersion: '2010-09-09'
+Transform: AWS::Serverless-2016-10-31
+Description: >
+  The CodePipeline for CI/CD of the 100DaysOfCloud Backend infrastructure
+
+Parameters:
+  AppName:
+    Description: The name of the project. It will be used to name and tag resources.
+    Type: String
+
+
+Outputs:
+  GitHubBackendToken:
+    Description: The SSM Secret for the GitHub backend repository oauth token
+    Value: !Ref GitHubBackendToken
+    Export:
+      Name: !Sub ${AppName}-GitHub-Backend-Token-SSM-Secret
+
+Resources:
+  ### FIXME Encrypt this with a CMK
+  ### Have CodePipeline assume a role to access this key
+  ### So that the key can not be retrieved manually
+  GitHubBackendToken:
+    Type: AWS::SecretsManager::Secret
+    Properties:
+      Name: GitHubBackendToken
+      Description: !Sub The oauth token for the ${AppName} backend github repo
+
+  # Bucket for CodePipeline artifacts
+  ArtifactsBucket:
+    Type: AWS::S3::Bucket
+    Properties:
+      LifecycleConfiguration:
+        Rules:
+          - ExpirationInDays: 30
+            Status: Enabled
+
+  Pipeline:
+    Type: AWS::CodePipeline::Pipeline
+    Properties:
+      ArtifactStore:
+        Location: !Ref ArtifactsBucket
+        Type: S3
+      RoleArn: !GetAtt PipelineRole.Arn
+      Stages:
+        - Name: Source
+          Actions:
+            # - !If
+            #   - UseCodeCommit
+            #   - Name: CodeCommitSource
+            #     ActionTypeId:
+            #       Category: Source
+            #       Owner: AWS
+            #       Provider: CodeCommit
+            #       Version: "1"
+            #     Configuration:
+            #       RepositoryName: !Ref CodeCommitRepo
+            #       BranchName: !Ref CodeCommitBranch
+            #     OutputArtifacts:
+            #       - Name: SourceArtifact
+            - Name: GitHubSource
+              ActionTypeId:
+                Category: Source
+                Owner: ThirdParty
+                Provider: GitHub
+                Version: "1"
+              Configuration:
+                Owner: "what-name" #FIXME
+                OAuthToken: '{{resolve:secretsmanager:Chris-Test-GitHubToken-7WgSiF:SecretString:token}}' #FIXME
+                Repo: "testing-100doc-backend"
+                Branch: "master"
+                PollForSourceChanges: false
+              OutputArtifacts:
+                - Name: SourceArtifact
+        # - Name: Build
+        #   Actions:
+        #     - Name: Build
+        #       ActionTypeId:
+        #         Category: Build
+        #         Owner: AWS
+        #         Provider: CodeBuild
+        #         Version: "1"
+        #       Configuration:
+        #         ProjectName: !Ref BuildProject
+        #       InputArtifacts:
+        #         - Name: SourceArtifact
+        #       OutputArtifacts:
+        #         - Name: BuildArtifact
+        # - !If
+        #   - HasTestStage
+        #   - Name: Test
+        #     Actions:
+        #       - Name: IntegrationTests
+        #         ActionTypeId:
+        #           Category: Test
+        #           Owner: AWS
+        #           Provider: CodeBuild
+        #           Version: '1'
+        #         Configuration:
+        #           ProjectName: !Ref IntegrationTestsProject
+        #           PrimarySource: SourceArtifact
+        #         InputArtifacts:
+        #           - Name: SourceArtifact
+        #           - Name: BuildArtifact
+        #   - !Ref AWS::NoValue
+        # - !If
+        #   - HasDeployStage
+        #   - Name: Deploy
+        #     Actions:
+        #       - Name: CreateChangeSet
+        #         ActionTypeId:
+        #           Category: Deploy
+        #           Owner: AWS
+        #           Provider: CloudFormation
+        #           Version: '1'
+        #         InputArtifacts:
+        #           - Name: BuildArtifact
+        #         Configuration:
+        #           ActionMode: CHANGE_SET_REPLACE
+        #           Capabilities: CAPABILITY_IAM,CAPABILITY_AUTO_EXPAND
+        #           ParameterOverrides: !Ref DeployParameterOverrides
+        #           RoleArn: !Sub arn:${AWS::Partition}:iam::${AWS::AccountId}:role/${DeployRoleName}
+        #           StackName: !Ref DeployStackName
+        #           TemplatePath: "BuildArtifact::packaged-template.yaml"
+        #           ChangeSetName: !Sub a-${DeployStackName}-Deploy
+        #         RunOrder: 1
+        #       - Name: ExecuteChangeSet
+        #         ActionTypeId:
+        #           Category: Deploy
+        #           Owner: AWS
+        #           Provider: CloudFormation
+        #           Version: '1'
+        #         Configuration:
+        #           ActionMode: CHANGE_SET_EXECUTE
+        #           StackName: !Ref DeployStackName
+        #           ChangeSetName: !Sub a-${DeployStackName}-Deploy
+        #         RunOrder: 2
+        #   - !Ref AWS::NoValue
+        # - !If
+        #   - HasPublishStage
+        #   - Name: Publish
+        #     Actions:
+        #       - Name: Publish
+        #         ActionTypeId:
+        #           Category: Invoke
+        #           Owner: AWS
+        #           Provider: Lambda
+        #           Version: '1'
+        #         Configuration:
+        #           FunctionName: !GetAtt SARPublishApp.Outputs.ServerlessRepoPublishFunctionName
+        #         InputArtifacts:
+        #           - Name: BuildArtifact
+        #         RunOrder: 1
+        #   - !Ref AWS::NoValue
+
+  PipelineRole:
+    Type: AWS::IAM::Role
+    Properties:
+      Description: !Sub "Used by CodePipeline. Created by CloudFormation ${AWS::StackId}"
+      AssumeRolePolicyDocument:
+        Version: "2012-10-17"
+        Statement:
+          - Effect: Allow
+            Principal:
+              Service:
+                - "codepipeline.amazonaws.com"
+            Action:
+              - "sts:AssumeRole"
+      Policies:
+        - PolicyName: s3-access
+          PolicyDocument:
+            Version: "2012-10-17"
+            Statement:
+              - Effect: Allow
+                Action:
+                  - "s3:DeleteObject"
+                  - "s3:GetObject"
+                  - "s3:GetObjectVersion"
+                  - "s3:PutObject"
+                Resource:
+                  - !Sub arn:${AWS::Partition}:s3:::${ArtifactsBucket}/*
+              - Effect: Allow
+                Action:
+                  - "s3:ListBucket"
+                  - "s3:GetBucketPolicy"
+                Resource:
+                  - !Sub arn:${AWS::Partition}:s3:::${ArtifactsBucket}
+          #FIXME
+        - PolicyName: secretsmanager-access
+          PolicyDocument:
+            Version: "2012-10-17"
+            Statement:
+              - Effect: Allow
+                Action:
+                  - "secretsmanager:GetSecretValue"
+                Resource: "arn:aws:secretsmanager:us-east-1:190290231151:secret:Chris-Test-GitHubToken-7WgSiF" #FIXME
+        # - PolicyName: codebuild-access
+        #   PolicyDocument:
+        #     Version: "2012-10-17"
+        #     Statement:
+        #       - Effect: Allow
+        #         Action:
+        #           - "codebuild:StartBuild"
+        #           - "codebuild:BatchGetBuilds"
+        #         Resource:
+        #           - !GetAtt BuildProject.Arn
+        #           - !If
+        #             - HasTestStage
+        #             - !GetAtt IntegrationTestsProject.Arn
+        #             - !Ref AWS::NoValue
+        # - !If
+        #   - HasDeployStage
+        #   - PolicyName: deploy-cloudformation-access
+        #     PolicyDocument:
+        #       Version: "2012-10-17"
+        #       Statement:
+        #         - Effect: Allow
+        #           Action:
+        #             - "cloudformation:DescribeStacks"
+        #             - "cloudformation:CreateChangeSet"
+        #             - "cloudformation:ExecuteChangeSet"
+        #             - "cloudformation:DescribeChangeSet"
+        #           Resource:
+        #             - !Sub arn:${AWS::Partition}:cloudformation:${AWS::Region}:${AWS::AccountId}:stack/${DeployStackName}/*
+        #   - !Ref AWS::NoValue
+        # - !If
+        #   - HasPublishStage
+        #   - PolicyName: publish-lambda-access
+        #     PolicyDocument:
+        #       Version: "2012-10-17"
+        #       Statement:
+        #         - Effect: Allow
+        #           Action:
+        #             - "lambda:InvokeFunction"
+        #           Resource:
+        #             - !GetAtt SARPublishApp.Outputs.ServerlessRepoPublishFunctionArn
+        #   - !Ref AWS::NoValue
+        # - !If
+        #   - HasDeployStage
+        #   - PolicyName: deploy-iam-access
+        #     PolicyDocument:
+        #       Version: "2012-10-17"
+        #       Statement:
+        #         - Effect: Allow
+        #           Action:
+        #             - "iam:PassRole"
+        #           Resource:
+        #             - !Sub arn:${AWS::Partition}:iam::${AWS::AccountId}:role/${DeployRoleName}
+        #   - !Ref AWS::NoValue
+        # - !If
+        #   - UseCodeCommit
+        #   - PolicyName: codecommit-access
+        #     PolicyDocument:
+        #       Version: "2012-10-17"
+        #       Statement:
+        #         - Effect: Allow
+        #           Action:
+        #             - "codecommit:ListBranches"
+        #             - "codecommit:GetBranch"
+        #             - "codecommit:GetCommit"
+        #             - "codecommit:GetUploadArchiveStatus"
+        #             - "codecommit:GitPull"
+        #             - "codecommit:UploadArchive"
+        #             - "codecommit:CancelUploadArchive"
+        #           Resource:
+        #             - !Sub arn:${AWS::Partition}:codecommit:${AWS::Region}:${AWS::AccountId}:${CodeCommitRepo}
+        #   - !Ref AWS::NoValue
+
+  GitHubWebhook:
+    Type: AWS::CodePipeline::Webhook
+    #Condition: UseGitHub
+    Properties:
+      AuthenticationConfiguration:
+        SecretToken: '{{resolve:secretsmanager:Chris-Test-GitHubToken-7WgSiF:SecretString:token}}'
+      Filters:
+        - JsonPath: "$.ref"
+          MatchEquals: refs/heads/{Branch}
+      Authentication: GITHUB_HMAC
+      TargetPipeline: !Ref Pipeline
+      TargetAction: GitHubSource
+      TargetPipelineVersion: !GetAtt Pipeline.Version
+      RegisterWithThirdParty: true

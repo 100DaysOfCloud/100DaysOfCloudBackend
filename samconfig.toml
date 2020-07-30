@@ -1,0 +1,11 @@
+version = 0.1
+[default]
+[default.deploy]
+[default.deploy.parameters]
+stack_name = "HundredDaysOfCloudWebsite-Dev"
+s3_bucket = "aws-sam-cli-managed-default-samclisourcebucket-eqs40sdgkcq6"
+s3_prefix = "100DaysOfCloudWebsite-Dev"
+region = "us-east-1"
+capabilities = "CAPABILITY_IAM CAPABILITY_AUTO_EXPAND"
+confirm_changeset = "true"
+parameter_overrides = "AppName=\"100DaysOfCloudWebsite\" ClientDomains=\"http://localhost:8000, https://100daysofcloud.com\""

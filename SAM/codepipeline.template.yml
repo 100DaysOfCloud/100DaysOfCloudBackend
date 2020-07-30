@@ -188,13 +188,13 @@ Resources:
                   - !Sub arn:${AWS::Partition}:s3:::${ArtifactsBucket}
           #FIXME
         - PolicyName: secretsmanager-access
-        PolicyDocument:
-          Version: "2012-10-17"
-          Statement:
-            - Effect: Allow
-              Action:
-                - "secretsmanager:GetSecretValue"
-              Resource: "arn:aws:secretsmanager:us-east-1:190290231151:secret:Chris-Test-GitHubToken-7WgSiF" #FIXME
+          PolicyDocument:
+            Version: "2012-10-17"
+            Statement:
+              - Effect: Allow
+                Action:
+                  - "secretsmanager:GetSecretValue"
+                Resource: "arn:aws:secretsmanager:us-east-1:190290231151:secret:Chris-Test-GitHubToken-7WgSiF" #FIXME
         # - PolicyName: codebuild-access
         #   PolicyDocument:
         #     Version: "2012-10-17"

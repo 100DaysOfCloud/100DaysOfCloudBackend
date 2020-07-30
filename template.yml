@@ -122,9 +122,10 @@ Resources:
   #     Parameters:
   #       ClientDomains: !Ref ClientDomains
 
-  CodePipeline:
-    Type: AWS::Serverless::Application
-    Properties:
-      Location: 'SAM/codepipeline.template.yml'
-      Parameters:
-        AppName: !Ref AppName
+  ### STILL IN ACTIVE DEVELOPMENT
+  # CodePipeline:
+  #   Type: AWS::Serverless::Application
+  #   Properties:
+  #     Location: 'SAM/codepipeline.template.yml'
+  #     Parameters:
+  #       AppName: !Ref AppName

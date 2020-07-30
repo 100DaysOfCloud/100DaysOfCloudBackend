@@ -19,8 +19,8 @@ Resources:
   getUserByIdFunction:
     Type: AWS::Serverless::Function 
     Properties:
-      CodeUri: Lambda/
-      Handler: delete_me.lambda_handler
+      CodeUri: Lambda/get_user_by_Id
+      Handler: get_user_by_Id.lambda_handler
       Runtime: python3.7
       Policies:
         - DynamoDBReadPolicy:
@@ -29,7 +29,7 @@ Resources:
           Variables: 
             databaseName : !Ref UsersTable
       Events:
-        VisitorCounter:
+        GetUserById:
           Type: Api 
           Properties:
             Path: /users/{userID}

@@ -2,7 +2,7 @@ import os
 from moto import  mock_dynamodb2
 import boto3
 import pytest
-from API.get_user_by_Id import get_user_by_Id
+from api.lambda_functions.get_user_by_id import get_user_by_id
 
 
 @pytest.fixture(scope='function')
@@ -51,6 +51,6 @@ def test_get_user_by_ID(dynamodb,dynamodb_table):
     table=dynamodb_table
     table.put_item(Item={"github_username":'johndoe'})
     #response = table.get_item(Key={'github_username': 'johndoe'}) local test
-    response=get_user_by_Id.get_user_details_by_Id(table,'johndoe')
+    response=get_user_by_id.get_user_details_by_Id(table,'johndoe')
     #assert True if 'github_username' in response else False
     assert 'github_username' in  response

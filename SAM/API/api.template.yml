@@ -19,8 +19,8 @@ Resources:
   getUserByIdFunction:
     Type: AWS::Serverless::Function 
     Properties:
-      CodeUri: Lambda/get_user_by_Id
-      Handler: get_user_by_Id.lambda_handler
+      CodeUri: lambda_functions/get_user_by_id
+      Handler: get_user_by_id.lambda_handler
       Runtime: python3.7
       Policies:
         - DynamoDBReadPolicy:

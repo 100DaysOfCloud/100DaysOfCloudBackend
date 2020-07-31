@@ -96,4 +96,3 @@ amplifytools.xcconfig
 #Python APIs
 __pycache__/
 .pytest_cache/
-__init__.py

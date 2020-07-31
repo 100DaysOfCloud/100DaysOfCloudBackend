@@ -109,7 +109,7 @@ Resources:
   APIs:
     Type: AWS::Serverless::Application
     Properties:
-      Location: 'SAM/API/api.template.yml'
+      Location: 'sam/api/api.template.yml'
       Parameters:
         UsersTable: !Ref UsersTable
         AppName: !Ref AppName

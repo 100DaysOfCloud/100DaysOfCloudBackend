@@ -9,5 +9,5 @@ region = "us-east-1"
 profile = "mfa"
 confirm_changeset = true
 capabilities = "CAPABILITY_IAM CAPABILITY_AUTO_EXPAND"
-parameter_overrides = "AppName=\"100DaysOfCloudWebsite\" ClientDomains=\"http://localhost:8080\""
+parameter_overrides = "AppName=\"100DaysOfCloudWebsite\""
 

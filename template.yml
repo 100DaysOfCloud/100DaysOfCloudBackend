@@ -10,9 +10,15 @@ Parameters:
     Description: The name of the project. It will be used to name and tag resources.
     Type: String
     Default: "100DaysOfCloudWebsite"
+<<<<<<< HEAD
   ClientDomains:
     Description: Array of domains allowed to use the Cognito User Pool.
     Type: CommaDelimitedList
+=======
+  #ClientDomains:
+  #  Description: Array of domains allowed to use the Cognito User Pool.
+  #  Type: CommaDelimitedList
+>>>>>>> 52c8ea2a43893ad90c1f69527f68eea312481a8f
 
 Resources:
   # S3
@@ -122,9 +128,10 @@ Resources:
   #     Parameters:
   #       ClientDomains: !Ref ClientDomains
 
-  CodePipeline:
-    Type: AWS::Serverless::Application
-    Properties:
-      Location: '/SAM/codepipeline.template.yml'
-      Parameters:
-        AppName: !Ref AppName
+  ### STILL IN ACTIVE DEVELOPMENT
+  # CodePipeline:
+  #   Type: AWS::Serverless::Application
+  #   Properties:
+  #     Location: 'SAM/codepipeline.template.yml'
+  #     Parameters:
+  #       AppName: !Ref AppName

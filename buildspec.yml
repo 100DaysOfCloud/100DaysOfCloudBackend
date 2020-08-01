@@ -30,7 +30,7 @@ phases:
       # We package the SAM template and create `packaged.yaml` file that will be used in our pipeline for deployment
       ## Here we separate Build from Deployment and segregate permissions for different steps
       - echo "Starting SAM packaging `date` in `pwd`"
-      - aws cloudformation package --template-file template.yml --s3-bucket $BUILD_OUTPUT_BUCKET --output-template-file packaged.yaml
+      - aws cloudformation package --template-file template.yaml --s3-bucket $BUILD_OUTPUT_BUCKET --output-template-file packaged.yaml
   post_build:
     commands:
       # Use Post Build for notifications, git tags and any further customization after build

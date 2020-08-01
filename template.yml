@@ -125,6 +125,6 @@ Resources:
   CodePipeline:
     Type: AWS::Serverless::Application
     Properties:
-      Location: 'SAM/codepipeline.template.yml'
+      Location: '/SAM/codepipeline.template.yml'
       Parameters:
         AppName: !Ref AppName

@@ -10,4 +10,4 @@ This repository holds the serverless backend infrastructure for the 100DaysOfClo
 ![arch-diagram](static/100DaysOfCloud_Serverless_Backend.png)
 
 ## SAM
-The templates are written with SAM.
+The templates are written with SAM

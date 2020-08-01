@@ -106,13 +106,13 @@ Resources:
         Name: github_username
         Type: String
 
-  APIs:
-    Type: AWS::Serverless::Application
-    Properties:
-      Location: /SAM/API/api.template.yml
-      Parameters:
-        UsersTable: !Ref UsersTable
-        AppName: !Ref AppName
+  # APIs:
+  #  Type: AWS::Serverless::Application
+  #  Properties:
+  #    Location: 'sam/api/api.template.yml'
+  #    Parameters:
+  #      UsersTable: !Ref UsersTable
+  #      AppName: !Ref AppName
 
   ### Only deploy later when creating the Cognito pool is needed
   # Cognito:

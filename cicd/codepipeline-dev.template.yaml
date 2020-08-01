@@ -133,7 +133,7 @@ Resources:
                         - Name: SourceCodeAsZip
                       OutputArtifacts:
                         - Name: BuildArtifactAsZip
-                - Name: Staging
+                - Name: Dev
                   Actions:
                     - Name: CreateChangeSet
                       ActionTypeId:

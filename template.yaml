@@ -109,7 +109,7 @@ Resources:
   APIs:
     Type: AWS::Serverless::Application
     Properties:
-      Location: 'sam/api/api.template.yml'
+      Location: ./sam/api.template.yaml
       Parameters:
         UsersTable: !Ref UsersTable
         AppName: !Ref AppName
@@ -118,7 +118,7 @@ Resources:
   # Cognito:
   #   Type: AWS::Serverless::Application
   #   Properties:
-  #     Location: 'SAM/cognito.template.yml'
+  #     Location: 'SAM/cognito.template.yaml'
   #     Parameters:
   #       ClientDomains: !Ref ClientDomains
 
@@ -126,6 +126,6 @@ Resources:
   # CodePipeline:
   #   Type: AWS::Serverless::Application
   #   Properties:
-  #     Location: 'SAM/codepipeline.template.yml'
+  #     Location: 'SAM/codepipeline.template.yaml'
   #     Parameters:
   #       AppName: !Ref AppName

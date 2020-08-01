@@ -19,7 +19,7 @@ Resources:
   getUserByIdFunction:
     Type: AWS::Serverless::Function 
     Properties:
-      CodeUri: lambda_functions/get_user_by_id
+      CodeUri: lambda_functions/ #fixme
       Handler: get_user_by_id.lambda_handler
       Runtime: python3.7
       Policies:

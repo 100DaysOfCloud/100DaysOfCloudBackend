@@ -1,0 +1,13 @@
+version = 0.1
+[default]
+[default.deploy]
+[default.deploy.parameters]
+stack_name = "HundredDoc-codepipeline-test"
+s3_bucket = "aws-sam-cli-managed-default-samclisourcebucket-eqs40sdgkcq6"
+s3_prefix = "HundredDoc-codepipeline-test"
+region = "us-east-1"
+profile = "mfa"
+confirm_changeset = false
+capabilities = "CAPABILITY_IAM"
+parameter_overrides = "AppName=\"HundredDaysOfCloudWebsite\" GithubRepo=\"/100DaysOfCloud/Backend/GithubRepo\" GithubToken=\"/100DaysOfCloud/Backend/GithubTokenS\" GithubUser=\"/100DaysOfCloud/Backend/GithubUser\""
+

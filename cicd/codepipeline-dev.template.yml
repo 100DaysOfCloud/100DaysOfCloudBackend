@@ -27,7 +27,7 @@ Parameters:
     GithubToken:
       Description: Github OAuth Token with full permissions on admin:repo_hook and repo
       Type: AWS::SSM::Parameter::Value<String>
-      #NoEcho: true
+      NoEcho: true
       Default: /100DaysOfCloud/Backend/GithubTokenS
 
     GithubUser:
@@ -86,6 +86,7 @@ Resources:
             ServiceRole: !GetAtt CodeBuildServiceRole.Arn
             Source: 
                 Type: CODEPIPELINE
+                BuildSpec: buildspec.yml
             Tags: 
               - 
                 Key: Stack
@@ -126,7 +127,7 @@ Resources:
                         Version: "1"
                       Configuration:
                         Owner: !Ref GithubUser
-                        Repo: !Ref GithubRepo
+                        Repo: !Ref GithubRepo  # alternatively "{{resolve:ssm:/100DaysOfCloud/Backend/GithubRepo}}"
                         Branch: !Ref Stage
                         OAuthToken: !Ref GithubToken
                       OutputArtifacts:
@@ -146,44 +147,45 @@ Resources:
                         - Name: SourceCodeAsZip
                       OutputArtifacts:
                         - Name: BuildArtifactAsZip
-                - Name: Deploy
-                  Actions:
-                    - Name: CreateChangeSet
-                      ActionTypeId:
-                        Category: Deploy
-                        Owner: AWS
-                        Provider: CloudFormation
-                        Version: "1"
-                      Configuration:
-                      # More info on Possible Values for Cloudformation: https://docs.aws.amazon.com/AWSCloudFormation/latest/UserGuide/continuous-delivery-codepipeline-action-reference.html#w2ab2c13c13b9
-                        ActionMode: CHANGE_SET_REPLACE
-                        RoleArn: !GetAtt CloudFormationExecutionRole.Arn
-                        StackName: !Sub ${AppName}-Dev
-                        ChangeSetName: !Sub ${AppName}-ChangeSet-Dev
-                        TemplatePath: BuildArtifactAsZip::packaged.yml
-                        Capabilities: CAPABILITY_IAM
-                        ParameterOverrides: |
-                          {
-                            "AppName": "hdoc",
-                            "Stage": "dev"
-                          }
-                      InputArtifacts:
-                        - Name: BuildArtifactAsZip
-                      RunOrder: 1
-                    - Name: ExecuteChangeSet
-                      ActionTypeId:
-                        Category: Deploy
-                        Owner: AWS
-                        Provider: CloudFormation
-                        Version: "1"
-                      Configuration:
-                        ActionMode: CHANGE_SET_EXECUTE
-                        RoleArn: !GetAtt CloudFormationExecutionRole.Arn
-                        StackName: !Sub ${AppName}-Dev
-                        ChangeSetName: !Sub ${AppName}-ChangeSet-Dev
-                      OutputArtifacts:
-                        - Name: !Sub ${AppName}-ChangeSet-Dev-Artifact
-                      RunOrder: 2
+                # - Name: Deploy
+                #   Actions:
+                #     - Name: CreateChangeSet
+                #       ActionTypeId:
+                #         Category: Deploy
+                #         Owner: AWS
+                #         Provider: CloudFormation
+                #         Version: "1"
+                #       Configuration:
+                #       # More info on Possible Values for Cloudformation: https://docs.aws.amazon.com/AWSCloudFormation/latest/UserGuide/continuous-delivery-codepipeline-action-reference.html#w2ab2c13c13b9
+                #         ActionMode: CHANGE_SET_REPLACE
+                #         RoleArn: !GetAtt CloudFormationExecutionRole.Arn
+                #         StackName: !Sub ${AppName}-backend-${Stage}
+                #         ChangeSetName: !Sub ${AppName}-ChangeSet-${Stage}
+                #         TemplatePath: BuildArtifactAsZip::packaged.yml
+                #         Capabilities: CAPABILITY_IAM
+                #         ParameterOverrides: |
+                #           {
+                #             "AppName": "hdoc",
+                #             "Stage": "dev"
+                #           }
+                #       InputArtifacts:
+                #         - Name: BuildArtifactAsZip
+                #       RunOrder: 1
+                #     - Name: ExecuteChangeSet
+                #       ActionTypeId:
+                #         Category: Deploy
+                #         Owner: AWS
+                #         Provider: CloudFormation
+                #         Version: "1"
+                #       Configuration:
+                #         ActionMode: CHANGE_SET_EXECUTE
+                #         RoleArn: !GetAtt CloudFormationExecutionRole.Arn
+                #         StackName: !Sub ${AppName}-backend-${Stage}
+                #         ChangeSetName: !Sub ${AppName}-ChangeSet-${Stage}
+                #       OutputArtifacts:
+                #         - Name: !Sub ${AppName}-ChangeSet-${Stage}-Artifact
+                #       RunOrder: 2
+                #########################
                 # - Name: Prod
                 #   Actions:
                 #     - Name: DeploymentApproval
@@ -272,6 +274,20 @@ Resources:
                           - 's3:PutObject'
                         Resource:
                           - !Sub 'arn:aws:s3:::${BuildArtifactsBucket}/*'
+                - PolicyName: SAMDeploymentBucketAccess
+                  PolicyDocument:
+                    Version: '2012-10-17'
+                    Statement:
+                      - 
+                        Effect: Allow
+                        Action: 
+                          - 's3:GetObject'
+                          - 's3:GetObjectVersion'
+                          - 's3:PutObject'
+                          - 's3:ListBucket'
+                        Resource:
+                          - !Sub 'arn:aws:s3:::aws-sam-cli-managed-default-samclisourcebucket-*'
+                          - !Sub 'arn:aws:s3:::aws-sam-cli-managed-default-samclisourcebucket-*/*'
                 - PolicyName: CodeBuildParameterStore
                   PolicyDocument:
                     Version: '2012-10-17'

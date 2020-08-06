@@ -2,17 +2,17 @@
 AWSTemplateFormatVersion: '2010-09-09'
 Transform: AWS::Serverless-2016-10-31
 Description: >
-  The infrastructure of the 100DaysOfCloud website's frontend
+  The infrastructure of the 100DaysOfCloud website frontend
 
 
 Parameters:
 
   AppName:
-    Description: The name of the project. It will be used to name and tag resources.
+    Description: "The name of the project. It will be used to name and tag resources."
     Type: String
 
   Stage:
-    Description: The stage of the deployment, eg. prod, staging, dev
+    Description: "The stage of the deployment, eg. prod, staging, dev"
     Type: String
     Default: dev
     AllowedValues:
@@ -23,7 +23,7 @@ Parameters:
 
 Outputs:
   CloudFrontURL:
-    Description: !Sub The URL of the ${AppName} ${Stage} distribution
+    Description: "The URL of the 100DaysOfCloud dev frontend distribution"
     Value: !GetAtt WebsiteCloudFrontDistribution.DomainName 
 
 
@@ -85,7 +85,7 @@ Resources:
           S3OriginConfig:
             OriginAccessIdentity: !Sub "origin-access-identity/cloudfront/${CloudFrontOAI}"
         Enabled: 'true'
-        Comment: !Sub "${AppName} distribution"
+        Comment: !Sub "${AppName} ${Stage} distribution"
         DefaultRootObject: index.html
         # FIXME when domain switching
         # Aliases:

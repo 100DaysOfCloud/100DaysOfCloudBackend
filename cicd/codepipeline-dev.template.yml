@@ -322,15 +322,22 @@ Resources:
                         Resource: 
                           - !Sub 'arn:aws:cloudformation:${AWS::Region}:${AWS::AccountId}:stack/${AppName}*/*'
                           - !Sub 'arn:aws:cloudformation:${AWS::Region}:aws:transform/Serverless-2016-10-31'
-                - PolicyName: AccessToTemplateOutputs
+                - PolicyName: TemplateResourcesAccess
                   PolicyDocument:
                     Version: '2012-10-17'
                     Statement:
-                      - 
-                        Effect: Allow
+                      - Effect: Allow
                         Action: 
                           - 'cloudfront:GetDistribution'
                         Resource: '*'
+                      - Effect: Allow
+                        Action: 
+                          - 'dynamodb:*'
+                        Resource: !Sub 'arn:aws:dynamodb:${AWS::Region}:${AWS::AccountId}:table/hdoc-*'
+                      - Effect: Allow
+                        Action: 
+                          - 'iam:*'
+                        Resource: !Sub 'arn:aws:dynamodb:${AWS::Region}:${AWS::AccountId}:user/hdoc-*'
                           
 
 

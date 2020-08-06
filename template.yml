@@ -63,11 +63,11 @@ Resources:
 
   Frontend:
     Type: AWS::Serverless::Application
-      Properties:
-        Location: ./sam/frontend.template.yml
-        Parameters:
-          AppName: !Ref AppName
-          Stage: !Ref Stage
+    Properties:
+      Location: ./sam/frontend.template.yml
+      Parameters:
+        AppName: !Ref AppName
+        Stage: !Ref Stage
 
   # APIs:
   #   Type: AWS::Serverless::Application

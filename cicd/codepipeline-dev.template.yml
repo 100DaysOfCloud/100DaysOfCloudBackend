@@ -146,7 +146,7 @@ Resources:
                         - Name: SourceCodeAsZip
                       OutputArtifacts:
                         - Name: BuildArtifactAsZip
-                - Name: !Sub Deploy to ${Stage}
+                - Name: Deploy
                   Actions:
                     - Name: CreateChangeSet
                       ActionTypeId:

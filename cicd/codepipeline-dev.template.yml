@@ -328,7 +328,7 @@ Resources:
                     Statement:
                       - Effect: Allow
                         Action: 
-                          - 'cloudfront:GetDistribution'
+                          - 'cloudfront:*'
                         Resource: '*'
                       - Effect: Allow
                         Action: 
@@ -338,6 +338,12 @@ Resources:
                         Action: 
                           - 'iam:*'
                         Resource: !Sub 'arn:aws:dynamodb:${AWS::Region}:${AWS::AccountId}:user/hdoc-*'
+                      - Effect: Allow
+                        Action: 
+                          - 's3:*'
+                        Resource:
+                          - !Sub 'arn:aws:s3:::hdoc-*'
+                          - !Sub 'arn:aws:s3:::hdoc-*/*'
                           
 
 

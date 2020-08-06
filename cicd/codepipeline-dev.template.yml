@@ -299,6 +299,28 @@ Resources:
                           - !Sub 'arn:aws:ssm:${AWS::Region}:${AWS::AccountId}:parameter/${GithubRepo}'
                           - !Sub 'arn:aws:ssm:${AWS::Region}:${AWS::AccountId}:parameter/${GithubToken}'
                           - !Sub 'arn:aws:ssm:${AWS::Region}:${AWS::AccountId}:parameter/${GithubUser}'
+                - PolicyName: CodePipelineCodeBuildAndCloudformationAccess
+                  PolicyDocument:
+                    Version: '2012-10-17'
+                    Statement:
+                      - 
+                        Effect: Allow
+                        Action: 
+                          - 'cloudformation:CreateStack'
+                          - 'cloudformation:DescribeStacks'
+                          - 'cloudformation:DeleteStack'
+                          - 'cloudformation:UpdateStack'
+                          - 'cloudformation:CreateChangeSet'
+                          - 'cloudformation:ExecuteChangeSet'
+                          - 'cloudformation:DeleteChangeSet'
+                          - 'cloudformation:DescribeChangeSet'
+                          - 'cloudformation:SetStackPolicy'
+                          - 'cloudformation:SetStackPolicy'
+                          - 'cloudformation:ValidateTemplate'
+                        Resource: 
+                          - !Sub 'arn:aws:cloudformation:${AWS::Region}:${AWS::AccountId}:stack/${AppName}*/*'
+                          - !Sub 'arn:aws:cloudformation:${AWS::Region}:aws:transform/Serverless-2016-10-31'
+                          
 
 
     CloudFormationExecutionRole:

@@ -8,7 +8,7 @@ Parameters:
     AppName:
       Description: The name of the project. It will be used to name and tag resources.
       Type: String
-      Default: "HundredDaysOfCloudWebsite"
+      Default: "hdoc"
 
     Stage:
       Description: The stage of the deployment, eg. prod, staging, dev

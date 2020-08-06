@@ -3,7 +3,7 @@
 
 # SAM Build
 .aws-sam
-packaged.yaml
+packaged.yml
 
 # what-name / Chris
 misc-notes.md

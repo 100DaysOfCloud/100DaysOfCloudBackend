@@ -30,6 +30,12 @@ Parameters:
       - staging
       - prod
 
+### WARNING
+# For every output, the CodeBuild role in the cicd folder needs to have permissions
+# to get, otherwise it will fail. e.g cloudfront:GetDistribution
+# Outputs of nested stacks are required as well
+# Outputs:
+
 
 #####  ######  ####   ####  #    # #####   ####  ######  ####  
 #    # #      #      #    # #    # #    # #    # #      #      

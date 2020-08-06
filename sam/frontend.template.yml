@@ -112,3 +112,22 @@ Resources:
         # ViewerCertificate:
         #   AcmCertificateArn: !Ref DomainCertificate
         #   SslSupportMethod: sni-only 
+
+  FrontendGitHubCICDUser:
+    Type: AWS::IAM::User
+      Properties:
+        Policies:
+          - PolicyName: WebsiteBucketAccess
+            PolicyDocument:
+              Version: '2012-10-17'
+              Statement:
+              - Effect: Allow
+                Action:
+                - 's3:*'
+                Resource:
+                - !Sub 'arn:aws:s3:::${WebsiteBucket}/*'
+              - Effect: Allow
+                Action:
+                - 's3:ListBucket'
+                Resource:
+                - !Sub 'arn:aws:s3:::${WebsiteBucket}'

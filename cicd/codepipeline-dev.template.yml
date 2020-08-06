@@ -10,6 +10,15 @@ Parameters:
       Type: String
       Default: "HundredDaysOfCloudWebsite"
 
+    Stage:
+      Description: The stage of the deployment, eg. prod, staging, dev
+      Type: String
+      Default: dev
+      AllowedValues:
+        - dev
+        - staging
+        - prod
+
     GithubRepo:
       Description: Gitub Repository name
       Type: AWS::SSM::Parameter::Value<String>
@@ -59,8 +68,8 @@ Resources:
     CodeBuildProject:
         Type: AWS::CodeBuild::Project
         Properties:
-            Name: !Sub ${AppName}-backend-build
-            Description: !Sub Build project for the ${AppName}
+            Name: !Sub ${AppName}-backend-${Stage}-build
+            Description: !Sub Build project for the ${AppName} on the ${Stage} stage.
             Artifacts:
               Type: CODEPIPELINE
             Environment: 
@@ -84,6 +93,10 @@ Resources:
               -
                 Key: CostCenter
                 Value: !Ref AppName
+              - 
+                Key: Stage
+                Value: !Ref Stage
+                
 
 ########  #### ########  ######## ##       #### ##    ## ######## 
 ##     ##  ##  ##     ## ##       ##        ##  ###   ## ##       
@@ -99,7 +112,7 @@ Resources:
             ArtifactStore: 
                 Location: !Ref BuildArtifactsBucket
                 Type: S3
-            Name: !Sub ${AppName}-backend
+            #Name: !Sub ${AppName}-backend-${Stage}
             RoleArn: !GetAtt CodePipelineExecutionRole.Arn
             Stages:
                 - Name: Source
@@ -114,7 +127,7 @@ Resources:
                       Configuration:
                         Owner: !Ref GithubUser
                         Repo: !Ref GithubRepo
-                        Branch: dev
+                        Branch: !Ref Stage
                         OAuthToken: !Ref GithubToken
                       OutputArtifacts:
                         - Name: SourceCodeAsZip
@@ -133,7 +146,7 @@ Resources:
                         - Name: SourceCodeAsZip
                       OutputArtifacts:
                         - Name: BuildArtifactAsZip
-                - Name: Dev
+                - Name: !Sub Deploy to ${Stage}
                   Actions:
                     - Name: CreateChangeSet
                       ActionTypeId:
@@ -147,13 +160,13 @@ Resources:
                         RoleArn: !GetAtt CloudFormationExecutionRole.Arn
                         StackName: !Sub ${AppName}-Dev
                         ChangeSetName: !Sub ${AppName}-ChangeSet-Dev
-                        TemplatePath: BuildArtifactAsZip::packaged.yaml
+                        TemplatePath: BuildArtifactAsZip::packaged.yml
                         Capabilities: CAPABILITY_IAM
-                        # ParameterOverrides: |
-                        #   '{
-                        #     "AppName": "HundredDaysOfCloudWebsite-Dev",
-                        #     "ClientDomains": [{"http://localhost:8080", "https://100daysofcloud.com"}]
-                        #   }'
+                        ParameterOverrides: |
+                          {
+                            "AppName": "hdoc",
+                            "Stage": "dev"
+                          }
                       InputArtifacts:
                         - Name: BuildArtifactAsZip
                       RunOrder: 1
@@ -191,7 +204,7 @@ Resources:
                 #         RoleArn: !GetAtt CloudFormationExecutionRole.Arn
                 #         StackName: sam-pipeline-test-Prod
                 #         ChangeSetName: sam-pipeline-test-ChangeSet-Prod
-                #         TemplatePath: BuildArtifactAsZip::packaged.yaml
+                #         TemplatePath: BuildArtifactAsZip::packaged.yml
                 #         Capabilities: CAPABILITY_IAM
                 #       InputArtifacts:
                 #         - Name: BuildArtifactAsZip
@@ -245,8 +258,8 @@ Resources:
                           - 'logs:CreateLogStream'
                           - 'logs:PutLogEvents'
                         Resource:
-                          - !Sub 'arn:aws:logs:${AWS::Region}:${AWS::AccountId}:log-group:/aws/codebuild/${AppName}-backend-build'
-                          - !Sub 'arn:aws:logs:${AWS::Region}:${AWS::AccountId}:log-group:/aws/codebuild/${AppName}-backend-build:*'
+                          - !Sub 'arn:aws:logs:${AWS::Region}:${AWS::AccountId}:log-group:/aws/codebuild/${AppName}-backend-${Stage}-build'
+                          - !Sub 'arn:aws:logs:${AWS::Region}:${AWS::AccountId}:log-group:/aws/codebuild/${AppName}-backend-${Stage}-build:*'
                 - PolicyName: CodeBuildArtifactsBucket
                   PolicyDocument:
                     Version: '2012-10-17'

@@ -4,7 +4,7 @@ import logging
 import json
 import os 
 
-dynamodb = boto3.resource('dynamodb',os.environ['AWS_REGION'])
+dynamodb = boto3.resource('dynamodb',os.environ['AWS_DEFAULT_REGION'])
 logging.basicConfig(
     level=logging.INFO,
     format=f'%(asctime)s %(levelname)s %(message)s'
@@ -41,7 +41,7 @@ def lambda_handler(event, context):
         logger.error('Username in request found to be empty')
     else:   
         table = dynamodb.Table(os.environ['databaseName'])
-        resp=get_user_details_by_Id(table,git_user)
+        resp = get_user_details_by_Id(table,git_user)
             
     return {
         'headers': {
@@ -61,16 +61,17 @@ def get_user_details_by_Id(table,git_user):
         response = table.get_item(Key={'github_username': git_user})
         #If there is an entry there exists a user with that username, return user details wrapped in an object 
         if "Item" in  response:
-            resp= response['Item']
-            status_code=200
+            resp = response['Item']
+            status_code = 200
         #If there is no 'Item' found in response it means that there was no data for that primary key and user does not exist    
         else:
-             status_code=404   
+             status_code = 404   
              resp['message']='User Not found'
              logger.error('User '+str(git_user)+' not found')
         
     except ClientError as e:
-        status_code=500
+        status_code = 500
         logger.error(e.response['Error']['Message'])
-        resp['message']=e.response['Error']['Message']
+        resp['message'] = e.response['Error']['Message']
+
     return resp    

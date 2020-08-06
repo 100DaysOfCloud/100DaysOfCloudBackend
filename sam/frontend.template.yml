@@ -2,17 +2,30 @@
 AWSTemplateFormatVersion: '2010-09-09'
 Transform: AWS::Serverless-2016-10-31
 Description: >
-  The infrastructure of the 100DaysOfCloud website.
+  The infrastructure of the 100DaysOfCloud website's frontend
 
 
 Parameters:
+
   AppName:
     Description: The name of the project. It will be used to name and tag resources.
     Type: String
-    Default: "100DaysOfCloudWebsite"
-  #ClientDomains:
-  #  Description: Array of domains allowed to use the Cognito User Pool.
-  #  Type: CommaDelimitedList
+
+  Stage:
+    Description: The stage of the deployment, eg. prod, staging, dev
+    Type: String
+    Default: dev
+    AllowedValues:
+      - dev
+      - staging
+      - prod
+
+
+Outputs:
+  CloudFrontURL:
+    Description: !Sub The URL of the ${AppName} ${Stage} distribution
+    Value: !GetAtt WebsiteCloudFrontDistribution.DomainName 
+
 
 Resources:
   # S3
@@ -20,6 +33,7 @@ Resources:
   WebsiteBucket:
     Type: AWS::S3::Bucket
     Properties:
+      BucketName: !Sub ${AppName}-frontend-${Stage}-websitebucket
       WebsiteConfiguration:
         IndexDocument: index.html
       CorsConfiguration:
@@ -98,34 +112,3 @@ Resources:
         # ViewerCertificate:
         #   AcmCertificateArn: !Ref DomainCertificate
         #   SslSupportMethod: sni-only 
-
-  UsersTable:
-    Type: AWS::Serverless::SimpleTable
-    Properties:
-      PrimaryKey:
-        Name: github_username
-        Type: String
-
-  APIs:
-    Type: AWS::Serverless::Application
-    Properties:
-      Location: ./sam/api.template.yaml
-      Parameters:
-        UsersTable: !Ref UsersTable
-        AppName: !Ref AppName
-
-  ### Only deploy later when creating the Cognito pool is needed
-  # Cognito:
-  #   Type: AWS::Serverless::Application
-  #   Properties:
-  #     Location: './sam/cognito.template.yaml'
-  #     Parameters:
-  #       ClientDomains: !Ref ClientDomains
-
-  ### STILL IN ACTIVE DEVELOPMENT
-  # CodePipeline:
-  #   Type: AWS::Serverless::Application
-  #   Properties:
-  #     Location: './sam/codepipeline.template.yaml'
-  #     Parameters:
-  #       AppName: !Ref AppName

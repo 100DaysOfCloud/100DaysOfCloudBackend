@@ -2,7 +2,7 @@ import os
 from moto import  mock_dynamodb2
 import boto3
 import pytest
-from api.lambda_functions.get_user_by_id import get_user_by_id
+from get_user_by_id import lambda_handler
 
 
 @pytest.fixture(scope='function')
@@ -12,6 +12,7 @@ def aws_credentials():
     os.environ['AWS_SECRET_ACCESS_KEY'] = 'testing'
     os.environ['AWS_SECURITY_TOKEN'] = 'testing'
     os.environ['AWS_SESSION_TOKEN'] = 'testing'
+    os.environ['AWS_DEFAULT_REGION'] = 'us-east-1'
 
 
 
@@ -51,6 +52,6 @@ def test_get_user_by_ID(dynamodb,dynamodb_table):
     table=dynamodb_table
     table.put_item(Item={"github_username":'johndoe'})
     #response = table.get_item(Key={'github_username': 'johndoe'}) local test
-    response=get_user_by_id.get_user_details_by_Id(table,'johndoe')
+    response = lambda_handler(table,'johndoe')
     #assert True if 'github_username' in response else False
     assert 'github_username' in  response

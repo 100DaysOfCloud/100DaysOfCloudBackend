@@ -19,19 +19,8 @@ phases:
     commands:
       # Use Install phase to install packages or any pre-reqs you may need throughout the build (e.g. dev deps, security checks, etc.)
       - echo "[Install phase]"
-      
-      - echo "Install Brew"
-      - sh -c "$(curl -fsSL https://raw.githubusercontent.com/Linuxbrew/install/master/install.sh)"
-      - test -d ~/.linuxbrew && eval $(~/.linuxbrew/bin/brew shellenv)
-      - test -d /home/linuxbrew/.linuxbrew && eval $(/home/linuxbrew/.linuxbrew/bin/brew shellenv)
-      - test -r ~/.bash_profile && echo "eval \$($(brew --prefix)/bin/brew shellenv)" >>~/.bash_profile
-      - echo "eval \$($(brew --prefix)/bin/brew shellenv)" >>~/.profile
-      - brew --version
-      
       - echo "Install the SAM CLI"
-      - brew tap aws/tap
-      - brew install aws-sam-cli
-      - sam --version
+      - pip install aws-sam-cli
   pre_build:
     commands:
       # Use Pre-Build phase to run tests, install any code deps or any other customization before build

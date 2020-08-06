@@ -26,16 +26,22 @@ phases:
   build:
     commands:
       # Use Build phase to build your artifacts (compile, package, etc.)
-      # - echo "[Build phase]"
+      - echo "[Build phase]"
       # We package the SAM template and create `packaged.yaml` file that will be used in our pipeline for deployment
       ## Here we separate Build from Deployment and segregate permissions for different steps
-      - echo "Starting SAM packaging `date` in `pwd`"
-      - aws cloudformation package --template-file template.yml --s3-bucket $BUILD_OUTPUT_BUCKET --output-template-file packaged.yml
+
+      # - echo "Starting SAM packaging `date` in `pwd`"
+      # - aws cloudformation package --template-file template.yml --s3-bucket $BUILD_OUTPUT_BUCKET --output-template-file packaged.yml
+      - echo "Build SAM application `date` in `pwd`"
+      - sam build --debug
+
+      - echo "Deploy SAM Applicaion `date` in `pwd`"
+      - sam deploy --no-fail-on-empty-changeset
   post_build:
     commands:
       # Use Post Build for notifications, git tags and any further customization after build
       # - echo "[Post-Build phase]"
-      - echo "SAM packaging completed on `date`"
+      - echo "SAM deploy completed on `date`"
 
 ##################################
 # Build Artifacts to be uploaded #

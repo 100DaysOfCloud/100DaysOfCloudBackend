@@ -38,7 +38,7 @@ phases:
       - sam build --debug
 
       - echo "Deploy SAM Applicaion `date` in `pwd`"
-      - sam deploy --no-fail-on-empty-changeset
+      - sam deploy --no-fail-on-empty-changeset --role-arn $SAM_ROLE_ARN
       
       - echo "SAM deploy completed on `date`"
   post_build:

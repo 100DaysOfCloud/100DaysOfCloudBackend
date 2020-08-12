@@ -80,6 +80,9 @@ Resources:
                   - 
                     Name: BUILD_OUTPUT_BUCKET
                     Value: !Ref BuildArtifactsBucket
+                  - 
+                    Name: SAM_ROLE_ARN
+                    Value: !GetAtt CloudFormationExecutionRole.Arn
             Cache:
               Type: S3
               Location: !Sub ${BuildArtifactsBucket}/codebuild-cache

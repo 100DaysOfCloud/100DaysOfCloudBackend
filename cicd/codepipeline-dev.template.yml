@@ -6,7 +6,7 @@ Description: >
 Parameters:
 
     AppName:
-      Description: The name of the project. It will be used to name and tag resources.
+      Description: Make sure it is the same as the start of the stack name. It will be used to name, reference and tag resources.
       Type: String
       Default: "hdoc"
 
@@ -336,17 +336,19 @@ Resources:
                       - Effect: Allow
                         Action: 
                           - 'dynamodb:*'
-                        Resource: !Sub 'arn:aws:dynamodb:${AWS::Region}:${AWS::AccountId}:table/hdoc-*'
+                        Resource: !Sub 'arn:aws:dynamodb:${AWS::Region}:${AWS::AccountId}:table/${AppName}-*'
                       - Effect: Allow
                         Action: 
                           - 'iam:*'
-                        Resource: !Sub 'arn:aws:dynamodb:${AWS::Region}:${AWS::AccountId}:user/hdoc-*'
+                        Resource: 
+                          - !Sub 'arn:aws:iam::${AWS::AccountId}:user/${AppName}-*'
+                          - !Sub 'arn:aws:iam::${AWS::AccountId}:role/${AppName}-backend-${Stage}-codepipe-CloudFormationExecutionR'
                       - Effect: Allow
                         Action: 
                           - 's3:*'
                         Resource:
-                          - !Sub 'arn:aws:s3:::hdoc-*'
-                          - !Sub 'arn:aws:s3:::hdoc-*/*'
+                          - !Sub 'arn:aws:s3:::${AppName}-*'
+                          - !Sub 'arn:aws:s3:::${AppName}-*/*'
                           
 
 

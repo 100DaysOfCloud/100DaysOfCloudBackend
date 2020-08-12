@@ -116,6 +116,7 @@ Resources:
   FrontendGitHubCICDUser:
     Type: AWS::IAM::User
     Properties:
+      UserName: !Sub '${AppName}-Frontend-GitHub-CICD-User'
       Policies:
         - PolicyName: WebsiteBucketAccess
           PolicyDocument:
@@ -123,7 +124,10 @@ Resources:
             Statement:
             - Effect: Allow
               Action:
-              - 's3:*'
+                - 's3:GetObject'
+                - 's3:GetObjectVersion'
+                - 's3:PutObject'
+                - 's3:DeleteObject'
               Resource:
               - !Sub 'arn:aws:s3:::${WebsiteBucket}/*'
             - Effect: Allow

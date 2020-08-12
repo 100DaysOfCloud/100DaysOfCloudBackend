@@ -6,6 +6,7 @@ stack_name = "hdoc-backend-dev"
 s3_bucket = "aws-sam-cli-managed-default-samclisourcebucket-eqs40sdgkcq6"
 s3_prefix = "hdoc-backend-dev"
 region = "us-east-1"
-capabilities = "CAPABILITY_IAM CAPABILITY_AUTO_EXPAND"
+confirm_changeset = false
+capabilities = "CAPABILITY_IAM CAPABILITY_NAMED_IAM CAPABILITY_AUTO_EXPAND"
 parameter_overrides = "AppName=\"hdoc\" Stage=\"dev\""
 

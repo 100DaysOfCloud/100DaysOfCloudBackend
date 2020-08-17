@@ -4,7 +4,7 @@ import logging
 import json
 import os 
 
-dynamodb = boto3.resource('dynamodb',os.environ['AWS_DEFAULT_REGION'])
+dynamodb = boto3.resource('dynamodb')
 logging.basicConfig(
     level=logging.INFO,
     format=f'%(asctime)s %(levelname)s %(message)s'
@@ -26,9 +26,9 @@ def lambda_handler(event, context):
     """
  
 
-    git_user=""
-    resp={}
-    status_code=404
+    git_user = ""
+    response_body = {}
+    status_code = 404
     
     
     
@@ -36,12 +36,12 @@ def lambda_handler(event, context):
     if "username" in event["queryStringParameters"]:
         git_user=event["queryStringParameters"]['username']
 
-    if git_user=="":
-        resp['message']='Please query for a valid user'
+    if git_user == "":
+        response_body['message'] = 'Please query for a valid user'
         logger.error('Username in request found to be empty')
     else:   
         table = dynamodb.Table(os.environ['databaseName'])
-        resp = get_user_details_by_Id(table,git_user)
+        response_body = get_user_details_by_Id(table,git_user)
             
     return {
         'headers': {
@@ -50,12 +50,12 @@ def lambda_handler(event, context):
             'Access-Control-Allow-Methods': 'OPTIONS,POST,GET'
         },
         'statusCode': status_code,
-        'body': json.dumps(resp)
+        'body': json.dumps(response_body)
     }
 
 
 def get_user_details_by_Id(table,git_user):
-    resp={}
+    resp = {}
     try:
         #querying the dynamoDb with the primary key github_username
         response = table.get_item(Key={'github_username': git_user})

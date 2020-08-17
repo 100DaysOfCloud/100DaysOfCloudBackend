@@ -25,6 +25,9 @@ phases:
     commands:
       # Use Pre-Build phase to run tests, install any code deps or any other customization before build
       - echo "[Pre-Build phase]"
+      # - echo "Install dependencies for Lambda functions"
+      # - cd nested_lambda && pip install -r requirements.txt -t "$PWD"
+
   build:
     commands:
       # Use Build phase to build your artifacts (compile, package, etc.)

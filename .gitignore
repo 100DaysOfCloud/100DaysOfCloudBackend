@@ -8,6 +8,9 @@ packaged.yml
 # what-name / Chris
 misc-notes.md
 
+# SAM Lambda dependencies
+simplejson*
+
 #### DEPRECATED
 # Logs
 logs

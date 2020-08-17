@@ -72,13 +72,13 @@ Resources:
         AppName: !Ref AppName
         Stage: !Ref Stage
 
-  # APIs:
-  #   Type: AWS::Serverless::Application
-  #   Properties:
-  #     Location: ./sam/api.template.yml
-  #     Parameters:
-  #       UsersTable: !Ref UsersTable
-  #       AppName: !Ref AppName
+  APIs:
+    Type: AWS::Serverless::Application
+    Properties:
+      Location: ./sam/api.template.yml
+      Parameters:
+        UsersTable: !Ref UsersTable
+        AppName: !Ref AppName
 
   ### Only deploy later when creating the Cognito pool is needed
   # Cognito:
@@ -87,3 +87,8 @@ Resources:
   #     Location: './sam/cognito.template.yml'
   #     Parameters:
   #       ClientDomains: !Ref ClientDomains
+
+Outputs:
+  APIURL:
+    Description: The root URL of the main APIs
+    Value: !GetAtt APIs.Outputs.APIEndpoint

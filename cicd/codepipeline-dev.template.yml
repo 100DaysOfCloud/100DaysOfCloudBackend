@@ -339,10 +339,12 @@ Resources:
                         Resource: !Sub 'arn:aws:dynamodb:${AWS::Region}:${AWS::AccountId}:table/${AppName}-*'
                       - Effect: Allow
                         Action: 
+                          # FIXME
                           - 'iam:*'
+                          - 'iam:PassRole'
                         Resource: 
                           - !Sub 'arn:aws:iam::${AWS::AccountId}:user/${AppName}-*'
-                          - !Sub 'arn:aws:iam::${AWS::AccountId}:role/${AppName}-backend-${Stage}-codepipe-CloudFormationExecutionR'
+                          - !Sub 'arn:aws:iam::${AWS::AccountId}:role/*' # ${AppName}-backend-${Stage}-codepipe-CloudFormationExecutionR'
                       - Effect: Allow
                         Action: 
                           - 's3:*'

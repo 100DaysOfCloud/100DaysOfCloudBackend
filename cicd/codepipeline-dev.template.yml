@@ -325,18 +325,18 @@ Resources:
                         Resource: 
                           - !Sub 'arn:aws:cloudformation:${AWS::Region}:${AWS::AccountId}:stack/${AppName}*/*'
                           - !Sub 'arn:aws:cloudformation:${AWS::Region}:aws:transform/Serverless-2016-10-31'
-                - PolicyName: TemplateResourcesAccess
+                - PolicyName: PassRoleToSAM
                   PolicyDocument:
                     Version: '2012-10-17'
                     Statement:
-                      - Effect: Allow
-                        Action: 
-                          - 'cloudfront:*'
-                        Resource: '*'
-                      - Effect: Allow
-                        Action: 
-                          - 'dynamodb:*'
-                        Resource: !Sub 'arn:aws:dynamodb:${AWS::Region}:${AWS::AccountId}:table/${AppName}-*'
+                      # - Effect: Allow
+                      #   Action: 
+                      #     - 'cloudfront:*'
+                      #   Resource: '*'
+                      # - Effect: Allow
+                      #   Action: 
+                      #     - 'dynamodb:*'
+                      #   Resource: !Sub 'arn:aws:dynamodb:${AWS::Region}:${AWS::AccountId}:table/${AppName}-*'
                       # - Effect: Allow
                       #   Action: 
                       #     # FIXME
@@ -347,15 +347,16 @@ Resources:
                       #     - !Sub 'arn:aws:iam::${AWS::AccountId}:role/*' # ${AppName}-backend-${Stage}-codepipe-CloudFormationExecutionR'
                       - Effect: Allow
                         Action:
-                          - 'iam:*'
+                          - 'iam:GetRole'
+                          - 'iam:PassRole'
                         Resource:
-                          - '*'
-                      - Effect: Allow
-                        Action: 
-                          - 's3:*'
-                        Resource:
-                          - !Sub 'arn:aws:s3:::${AppName}-*'
-                          - !Sub 'arn:aws:s3:::${AppName}-*/*'
+                          - !GetAtt CloudFormationExecutionRole.Arn
+                      # - Effect: Allow
+                      #   Action: 
+                      #     - 's3:*'
+                      #   Resource:
+                      #     - !Sub 'arn:aws:s3:::${AppName}-*'
+                      #     - !Sub 'arn:aws:s3:::${AppName}-*/*'
                           
 
 

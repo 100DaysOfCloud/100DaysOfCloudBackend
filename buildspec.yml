@@ -25,6 +25,16 @@ phases:
     commands:
       # Use Pre-Build phase to run tests, install any code deps or any other customization before build
       - echo "[Pre-Build phase]"
+
+      ### FIXME #
+      # Need to cycle through all Lambda functions in the `sam/api` folder and do pip install for all of them respectively.
+      # `sam build` does not install the `requirements.txt` for nested Lambda functions so
+      # we need to manually install them in the pre-build phase and SAM will package each folder up respectively
+      # with the dependencies inside the folders. See your thread about this on the AWS Developers Slack
+      ###########
+      # - echo "Install dependencies for Lambda functions"
+      # - cd nested_lambda && pip install -r requirements.txt -t "$PWD"
+
   build:
     commands:
       # Use Build phase to build your artifacts (compile, package, etc.)

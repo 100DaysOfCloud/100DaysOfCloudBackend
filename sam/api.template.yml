@@ -19,9 +19,9 @@ Resources:
   getUserByIdFunction:
     Type: AWS::Serverless::Function 
     Properties:
-      CodeUri: api/
+      CodeUri: api/get_user_by_id
       Handler: get_user_by_id.lambda_handler
-      Runtime: python3.7
+      Runtime: python3.8
       Policies:
         - DynamoDBReadPolicy:
             TableName: !Ref UsersTable
@@ -32,7 +32,7 @@ Resources:
         GetUserById:
           Type: Api 
           Properties:
-            Path: /users/{userID}
+            Path: /users
             Method: get
       # Tags:
       #   CostCenter: !Ref WebsiteDomainName

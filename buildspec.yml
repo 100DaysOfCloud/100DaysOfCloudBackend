@@ -22,16 +22,16 @@ phases:
       - echo "Install the SAM CLI"
       - pip install aws-sam-cli
 
-      # Install PyTest
+      # Install PyTest & libraries
       - pip install pytest
-      
+      - pip install -r sam/requirements.txt
+
   pre_build:
     commands:
       # Use Pre-Build phase to run tests, install any code deps or any other customization before build
       - echo "[Pre-Build phase]"
 
       # PyTest for the Lambdas
-      - pip install -r sam/requirements.txt
       - pytest -vv
 
       ### FIXME #

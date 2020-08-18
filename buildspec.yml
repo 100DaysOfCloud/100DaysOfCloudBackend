@@ -21,10 +21,18 @@ phases:
       - echo "[Install phase]"
       - echo "Install the SAM CLI"
       - pip install aws-sam-cli
+
+      # Install PyTest & libraries
+      - pip install pytest
+      - pip install -r sam/requirements.txt
+
   pre_build:
     commands:
       # Use Pre-Build phase to run tests, install any code deps or any other customization before build
       - echo "[Pre-Build phase]"
+
+      # PyTest for the Lambdas
+      - pytest -vv
 
       ### FIXME #
       # Need to cycle through all Lambda functions in the `sam/api` folder and do pip install for all of them respectively.
@@ -32,8 +40,9 @@ phases:
       # we need to manually install them in the pre-build phase and SAM will package each folder up respectively
       # with the dependencies inside the folders. See your thread about this on the AWS Developers Slack
       ###########
-      # - echo "Install dependencies for Lambda functions"
-      # - cd nested_lambda && pip install -r requirements.txt -t "$PWD"
+      # FIXME path finding automatic
+      - echo "Install dependencies for Lambda functions"
+      - cd sam/api/get_user_by_id && pip install -r requirements.txt -t "$PWD"
 
   build:
     commands:

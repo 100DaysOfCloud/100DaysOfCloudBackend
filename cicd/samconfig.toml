@@ -6,6 +6,6 @@ stack_name = "hdoc-backend-dev-codepipeline"
 s3_bucket = "aws-sam-cli-managed-default-samclisourcebucket-eqs40sdgkcq6"
 s3_prefix = "hdoc-backend-dev-codepipeline"
 region = "us-east-1"
-confirm_changeset = false
+confirm_changeset = true
 capabilities = "CAPABILITY_IAM"
 parameter_overrides = "AppName=\"hdoc\" GithubRepo=\"/100DaysOfCloud/Backend/GithubRepo\" GithubToken=\"/100DaysOfCloud/Backend/GithubTokenS\" GithubUser=\"/100DaysOfCloud/Backend/GithubUser\""

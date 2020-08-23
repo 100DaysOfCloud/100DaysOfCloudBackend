@@ -4,6 +4,7 @@
 # SAM Build
 .aws-sam
 packaged.yml
+cicd/.aws-sam
 
 # what-name / Chris
 misc-notes.md

@@ -1,0 +1,94 @@
+---
+AWSTemplateFormatVersion: '2010-09-09'
+Transform: AWS::Serverless-2016-10-31
+Description: >
+  The infrastructure of the 100DaysOfCloud website.
+
+#####    ##   #####    ##   #    #  ####  
+#    #  #  #  #    #  #  #  ##  ## #      
+#    # #    # #    # #    # # ## #  ####  
+#####  ###### #####  ###### #    #      # 
+#      #    # #   #  #    # #    # #    # 
+#      #    # #    # #    # #    #  ####  
+
+Parameters:
+  AppName:
+    Description: The name of the project. It will be used to name and tag resources.
+    Type: String
+    Default: "hdoc"
+
+  # ClientDomains:
+  #   Description: Array of domains allowed to use the Cognito User Pool.
+  #   Type: CommaDelimitedList
+
+  Stage:
+    Description: The stage of the deployment, eg. prod, staging, dev
+    Type: String
+    Default: dev
+    AllowedValues:
+      - dev
+      - staging
+      - prod
+
+### WARNING
+# For every resource and output, CodeBuild's Role has to have permissions to it
+
+
+#####  ######  ####   ####  #    # #####   ####  ######  ####  
+#    # #      #      #    # #    # #    # #    # #      #      
+#    # #####   ####  #    # #    # #    # #      #####   ####  
+#####  #           # #    # #    # #####  #      #           # 
+#   #  #      #    # #    # #    # #   #  #    # #      #    # 
+#    # ######  ####   ####   ####  #    #  ####  ######  ####  
+Resources:
+
+  UsersTable:
+    Type: AWS::Serverless::SimpleTable
+    Properties:
+      PrimaryKey:
+        Name: github_username
+        Type: String
+
+
+#    # ######  ####  ##### ###### #####  
+##   # #      #        #   #      #    # 
+# #  # #####   ####    #   #####  #    # 
+#  # # #           #   #   #      #    # 
+#   ## #      #    #   #   #      #    # 
+#    # ######  ####    #   ###### #####            
+                                        
+ ####  #####   ##    ####  #    #  ####  
+#        #    #  #  #    # #   #  #      
+ ####    #   #    # #      ####    ####  
+     #   #   ###### #      #  #        # 
+#    #   #   #    # #    # #   #  #    # 
+ ####    #   #    #  ####  #    #  ####  
+
+  Frontend:
+    Type: AWS::Serverless::Application
+    Properties:
+      Location: ./sam/frontend.template.yml
+      Parameters:
+        AppName: !Ref AppName
+        Stage: !Ref Stage
+
+  APIs:
+    Type: AWS::Serverless::Application
+    Properties:
+      Location: ./sam/api.template.yml
+      Parameters:
+        UsersTable: !Ref UsersTable
+        AppName: !Ref AppName
+
+  ### Only deploy later when creating the Cognito pool is needed
+  # Cognito:
+  #   Type: AWS::Serverless::Application
+  #   Properties:
+  #     Location: './sam/cognito.template.yml'
+  #     Parameters:
+  #       ClientDomains: !Ref ClientDomains
+
+Outputs:
+  APIURL:
+    Description: The root URL of the main APIs
+    Value: !GetAtt APIs.Outputs.APIEndpoint

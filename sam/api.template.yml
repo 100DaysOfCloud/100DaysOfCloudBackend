@@ -34,6 +34,25 @@ Resources:
           Properties:
             Path: /users
             Method: get
+  # Return all users OR return users based on limit
+  getUsersFunction:
+    Type: AWS::Serverless::Function 
+    Properties:
+      CodeUri: api/get_users
+      Handler: get_users.lambda_handler
+      Runtime: python3.8
+      Policies:
+        - DynamoDBReadPolicy:
+            TableName: !Ref UsersTable
+      Environment:
+          Variables: 
+            databaseName : !Ref UsersTable
+      Events:
+        GetUsers:
+          Type: Api 
+          Properties:
+            Path: /allusers
+            Method: get        
       # Tags:
       #   CostCenter: !Ref WebsiteDomainName
 

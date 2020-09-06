@@ -32,7 +32,7 @@ Resources:
         GetUserById:
           Type: Api 
           Properties:
-            Path: /users
+            Path: /user
             Method: get
   # Return all users OR return users based on limit
   getUsersFunction:
@@ -51,7 +51,7 @@ Resources:
         GetUsers:
           Type: Api 
           Properties:
-            Path: /allusers
+            Path: /users
             Method: get        
       # Tags:
       #   CostCenter: !Ref WebsiteDomainName

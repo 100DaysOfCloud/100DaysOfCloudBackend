@@ -43,6 +43,7 @@ phases:
       # FIXME path finding automatic
       - echo "Install dependencies for Lambda functions"
       - cd sam/api/get_user_by_id && pip install -r requirements.txt -t "$PWD"
+      - cd sam/api/get_users && pip install -r requirements.txt -t "$PWD"
       - cd ../../..  # I should be punished for this
 
   build:

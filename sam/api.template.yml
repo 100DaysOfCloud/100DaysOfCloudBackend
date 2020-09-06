@@ -32,8 +32,27 @@ Resources:
         GetUserById:
           Type: Api 
           Properties:
-            Path: /users
+            Path: /user
             Method: get
+  # Return all users OR return users based on limit
+  getUsersFunction:
+    Type: AWS::Serverless::Function 
+    Properties:
+      CodeUri: api/get_users
+      Handler: get_users.lambda_handler
+      Runtime: python3.8
+      Policies:
+        - DynamoDBReadPolicy:
+            TableName: !Ref UsersTable
+      Environment:
+          Variables: 
+            databaseName : !Ref UsersTable
+      Events:
+        GetUsers:
+          Type: Api 
+          Properties:
+            Path: /users
+            Method: get        
       # Tags:
       #   CostCenter: !Ref WebsiteDomainName
 
@@ -43,4 +62,4 @@ Outputs:
     Description: "API Gateway endpoint URL"
     Value: !Sub "https://${ServerlessRestApi}.execute-api.${AWS::Region}.amazonaws.com/Prod/"
     Export:
-      Name: !Sub ${AppName}-GetUserByIDApiEndpoint
+      Name: !Sub ${AppName}-UsersAPIEndpoint

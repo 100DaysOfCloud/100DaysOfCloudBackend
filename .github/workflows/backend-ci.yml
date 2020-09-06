@@ -20,4 +20,4 @@ jobs:
           pip install pytest
           pip install -r sam/requirements.txt
       - name: Test with pytest
-        run: pytest -vv
+        run: pytest -vv -s

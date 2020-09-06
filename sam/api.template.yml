@@ -62,4 +62,4 @@ Outputs:
     Description: "API Gateway endpoint URL"
     Value: !Sub "https://${ServerlessRestApi}.execute-api.${AWS::Region}.amazonaws.com/Prod/"
     Export:
-      Name: !Sub ${AppName}-GetUserByIDApiEndpoint
+      Name: !Sub ${AppName}-UsersAPIEndpoint

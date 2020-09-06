@@ -56,7 +56,7 @@ def test_get_users():
 
     # Assert response from Lambda is returned only for first 2 users in mock
     assert response['statusCode'] == 200
-    assert len(json.loads(response['body'])) == os.environ['limit']
+    assert len(json.loads(response['body'])) == int(os.environ['limit'])
 
     event = {}
 

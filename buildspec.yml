@@ -32,7 +32,7 @@ phases:
       - echo "[Pre-Build phase]"
 
       # PyTest for the Lambdas
-      - pytest -vv
+      - pytest -vv -s
 
       ### FIXME #
       # Need to cycle through all Lambda functions in the `sam/api` folder and do pip install for all of them respectively.

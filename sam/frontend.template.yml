@@ -20,13 +20,6 @@ Parameters:
       - staging
       - prod
 
-
-Outputs:
-  CloudFrontURL:
-    Description: "The URL of the 100DaysOfCloud dev frontend distribution"
-    Value: !GetAtt WebsiteCloudFrontDistribution.DomainName 
-
-
 Resources:
   # S3
   ## Static site hosting bucket
@@ -135,3 +128,9 @@ Resources:
               - 's3:ListBucket'
               Resource:
               - !Sub 'arn:aws:s3:::${WebsiteBucket}'
+
+
+Outputs:
+  CloudFrontURL:
+    Description: "The URL of the 100DaysOfCloud dev frontend distribution"
+    Value: !GetAtt WebsiteCloudFrontDistribution.DomainName 

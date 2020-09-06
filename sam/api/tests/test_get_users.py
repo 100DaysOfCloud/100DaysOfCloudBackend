@@ -52,11 +52,11 @@ def test_get_users():
     response = lambda_handler(event, 0)
 
     # Print Lambda response
-    print("TEST - Response returned by Lambda: ", response)
+    print("GET ALL USERS TEST WITH LIMIT - Two items returned by Lambda: ", response)
 
     # Assert response from Lambda is returned only for first 2 users in mock
     assert response['statusCode'] == 200
-    assert len(json.loads(response['body']))==2 
+    assert len(json.loads(response['body'])) == os.environ['limit']
 
     event = {}
 
@@ -65,11 +65,11 @@ def test_get_users():
     response = lambda_handler(event, 0)
 
     # Print Lambda response
-    print("Response returned by Lambda: ", response)
+    print("GET ALL USERS TEST - All items returned by Lambda: ", response)
 
     # Assert response from Lambda is returned for all 4 users in mock
     assert response['statusCode'] == 200
-    assert len(json.loads(response['body']))==4
+    assert len(json.loads(response['body'])) == 4
 
 def setup_env_variables():
     """Mocked AWS Credentials for moto."""

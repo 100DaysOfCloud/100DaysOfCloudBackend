@@ -130,7 +130,8 @@ Resources:
               - !Sub 'arn:aws:s3:::${WebsiteBucket}'
 
 
-Outputs:
-  CloudFrontURL:
-    Description: "The URL of the 100DaysOfCloud dev frontend distribution"
-    Value: !GetAtt WebsiteCloudFrontDistribution.DomainName 
+## Output failing with "no such distribution" FIXME
+# Outputs:
+#   CloudFrontURL:
+#     Description: "The URL of the 100DaysOfCloud dev frontend distribution"
+#     Value: !GetAtt WebsiteCloudFrontDistribution.DomainName 

@@ -30,12 +30,7 @@ def lambda_handler(event, context):
   # Check if username field is in the body of the request
   # If empty, return error message
   ### FIXME this returns a KeyError and results in an "internal server error"
-  if "username" not in event["queryStringParameters"]:
-    logger.info('Username in request found to be empty or non-existent')
-    status_code = 404
-    responseBody = "username field in the body of the request is missing"
-
-  else:
+  try:
     # Get github_username out of body of the request
     github_username = event["queryStringParameters"]['username']
 
@@ -60,6 +55,12 @@ def lambda_handler(event, context):
 
     # Log response from DynamoDB
     logger.info(responseBody)
+  
+  except:
+    logger.info('Username in request found to be empty or non-existent')
+    status_code = 404
+    responseBody = "username field in the body of the request is missing"
+
 
   return {
     "isBase64Encoded": False,

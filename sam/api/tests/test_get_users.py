@@ -58,10 +58,9 @@ def test_get_users():
     assert response['statusCode'] == 200
     assert len(json.loads(response['body'])) == int(os.environ['limit'])
 
-    event = {}
-
     # Call the imported Lambda function with the no query Params & null context
     # and put it into the 'response' object
+    event = {}
     response = lambda_handler(event, 0)
 
     # Print Lambda response

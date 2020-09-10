@@ -3,6 +3,7 @@ from botocore.exceptions import ClientError
 import logging
 import simplejson as json
 import os 
+import sys
 
 # Set up logging
 logging.basicConfig(
@@ -32,13 +33,18 @@ def lambda_handler(event, context):
   try:
     print("TRY 1")
     set_limit=False
-    if "queryStringParameters" in event:
+    if event["queryStringParameters"] is not None:
       print("TRY 1.5")
+      print("EVENT: ", event)
       if "limit" in event["queryStringParameters"]:
         #capture requested limit count 
         print("TRY 2")
-        set_limit=True
-        limit = int(event["queryStringParameters"]['limit'])
+        set_limit = True
+        print("EVENT: ", event["queryStringParameters"])
+        print(event["queryStringParameters"]["limit"])
+        limit = int(event["queryStringParameters"]["limit"])
+        print(limit)
+        print("TRY 2.1")
 
     
     # Scan the table with the limit
@@ -65,8 +71,9 @@ def lambda_handler(event, context):
     print("TRY 4")
   
   except:
+    print("Unexpected error:", sys.exc_info()[0])
     status_code = 500
-    responseBody = "ERROR: some server error, details later lol"
+    responseBody = "Unexpected error: " + str(sys.exc_info()[0])
 
   # Log response from DynamoDB
   logger.info(responseBody)
